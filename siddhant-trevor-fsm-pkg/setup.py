@@ -24,6 +24,11 @@ setup(
     },
     entry_points={
         'console_scripts': [
+            'fsm_node = siddhant_trevor_fsm_pkg.fsm_node:main',
+            'draw_shape_node = siddhant_trevor_fsm_pkg.draw_shape_node:main',
+            'obj_detector_node = siddhant_trevor_fsm_pkg.obj_detector_node:main',
+            'p_follow_node = siddhant_trevor_fsm_pkg.p_follow_node:main',
+            'w_follow_node = siddhant_trevor_fsm_pkg.w_follow_node:main',
         ],
     },
 )
