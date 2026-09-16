@@ -23,8 +23,8 @@ class DrawShape(Node):
         super().__init__('draw_shape_node')
         # create a thread to handle long-running component
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.num_turns = 4
-        self.distance = 0.5
+        self.num_turns = 5
+        self.distance = 1
         self.linear_speed = 0.1
         self.time_to_drive = self.distance / self.linear_speed
         self.get_logger().info("Hello world")
@@ -33,9 +33,15 @@ class DrawShape(Node):
 
 
     def run_loop(self):
-        for self.num_turns in range(4):
+        self.drive_forward(0.5)
+        for _ in range(self.num_turns):
             self.drive_forward(0.5)
-            self.turn_left(90)
+            self.turn_left(-144)
+            self.stop()
+
+    def stop(self):
+        self.vel_pub.publish(Twist())
+
 
     def drive_forward(self, distance):
         msg = Twist()
@@ -45,7 +51,8 @@ class DrawShape(Node):
 
     def turn_left(self, angle):
         msg = Twist()
-        msg.angular.z = (math.pi / 2) / self.time_to_drive
+        angle_rad = angle * math.pi/180
+        msg.angular.z = (angle_rad) / self.time_to_drive
         self.vel_pub.publish(msg)
         sleep(self.time_to_drive)
 
