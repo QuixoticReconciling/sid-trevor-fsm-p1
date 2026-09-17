@@ -23,14 +23,22 @@ class DrawShape(Node):
         super().__init__('draw_shape_node')
         # create a thread to handle long-running component
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
+
         self.num_turns = 5
         self.distance = 1
         self.linear_speed = 0.1
         self.time_to_drive = self.distance / self.linear_speed
-        self.get_logger().info("Hello world")
+
+        self.create_subscription(Bool, 'estop', self.handle_estop, 10)
+        self.e_stop = Event()
+
         self.run_loop_thread = Thread(target=self.run_loop)
         self.run_loop_thread.start()
 
+    def handle_estop(self, msg):
+        if msg.data:
+            self.e_stop.set()
+            msg = Twist()
 
     def run_loop(self):
         self.drive_forward(0.5)
