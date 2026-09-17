@@ -19,36 +19,25 @@ class DrawShape(Node):
     """A class that implements a node to pilot a robot in a square.
     """
 
-    def __init__(self):
+    def __init__(self, distance):
         super().__init__('draw_shape_node')
         # create a thread to handle long-running component
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
         self.num_turns = 5
-        self.distance = 1
+        self.distance = distance
         self.linear_speed = 0.1
         self.time_to_drive = self.distance / self.linear_speed
-
-        self.create_subscription(Bool, 'estop', self.handle_estop, 10)
-        self.e_stop = Event()
 
         self.run_loop_thread = Thread(target=self.run_loop)
         self.run_loop_thread.start()
 
-    def handle_estop(self, msg):
-        if msg.data:
-            self.e_stop.set()
-            msg = Twist()
-
     def run_loop(self):
         self.drive_forward(0.0)
         for _ in range(self.num_turns):
-            if not self.e_stop.is_set:
-                self.drive_forward(0.5)
-            if not self.e_stop.is_set:
-                self.turn_left(-144)
-
-            self.stop()
+            self.drive_forward(self.distance)
+            self.turn_left(-144)
+        self.stop()
             
 
     def stop(self):
