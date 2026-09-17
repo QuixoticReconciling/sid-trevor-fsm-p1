@@ -41,11 +41,15 @@ class DrawShape(Node):
             msg = Twist()
 
     def run_loop(self):
-        self.drive_forward(0.5)
+        self.drive_forward(0.0)
         for _ in range(self.num_turns):
-            self.drive_forward(0.5)
-            self.turn_left(-144)
+            if not self.e_stop.is_set:
+                self.drive_forward(0.5)
+            if not self.e_stop.is_set:
+                self.turn_left(-144)
+
             self.stop()
+            
 
     def stop(self):
         self.vel_pub.publish(Twist())
