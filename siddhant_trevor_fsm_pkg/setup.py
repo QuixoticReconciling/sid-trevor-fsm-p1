@@ -29,6 +29,7 @@ setup(
             'obj_detect = siddhant_trevor_fsm_pkg.obj_detect:main',
             'person_follow = siddhant_trevor_fsm_pkg.person_follow:main',
             'wall_follow = siddhant_trevor_fsm_pkg.wall_follow:main',
+            'detect_wall = siddhant_trevor_fsm_pkg.detect_wall:main',
         ],
     },
 )
