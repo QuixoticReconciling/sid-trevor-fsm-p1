@@ -30,7 +30,7 @@ class ObjDetectNode(Node):
 
 def main(args=None):
     rclpy.init(args=args)
-    node = StopOnBumpNode()
+    node = ObjDetectNode()
     rclpy.spin(node)
     rclpy.shutdown()
 
