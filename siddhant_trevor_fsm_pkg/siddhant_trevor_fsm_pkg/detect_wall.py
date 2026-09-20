@@ -31,7 +31,7 @@ class DetectWall(Node):
         if minus45 < 0:
             minus45 = minus45 + 360
             
-        if math.abs(msg.ranges[minus45] - msg.ranges[plus45]) < error:
+        if math.fabs(msg.ranges[minus45] - msg.ranges[plus45]) < error:
             print("WALL YEYAY")
         else:
             print("NO WALL SAD")
