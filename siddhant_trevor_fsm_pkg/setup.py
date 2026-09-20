@@ -27,7 +27,7 @@ setup(
             'fsm = siddhant_trevor_fsm_pkg.fsm:main',
             'draw_shape = siddhant_trevor_fsm_pkg.draw_shape:main',
             'obj_detect = siddhant_trevor_fsm_pkg.obj_detect:main',
-            'person_follow = siddhant_trevor_fsm_pkg.person_follow:main',
+            'adjust = siddhant_trevor_fsm_pkg.adjust:main',
             'wall_follow = siddhant_trevor_fsm_pkg.wall_follow:main',
             'detect_wall = siddhant_trevor_fsm_pkg.detect_wall:main',
         ],
