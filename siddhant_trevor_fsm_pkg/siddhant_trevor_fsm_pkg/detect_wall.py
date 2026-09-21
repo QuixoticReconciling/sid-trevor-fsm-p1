@@ -100,7 +100,7 @@ class DetectWall(Node):
     def detect_the_wall(self, msg):
         if self.active == False:
             return
-        error = .1
+        error = .2
         min_dist = msg.ranges[0]
         min_dist_idx = 0
         print(self.active)
@@ -109,14 +109,17 @@ class DetectWall(Node):
                 min_dist = distance
                 min_dist_idx = idx
 
-        plus45 = min_dist_idx + 45
+        plus45 = min_dist_idx + 30
         if plus45 >= 360:
             plus45 = plus45 - 360
 
-        minus45 = min_dist_idx - 45
+        minus45 = min_dist_idx - 30
 
         if minus45 < 0:
             minus45 = minus45 + 360
+
+        print(f"side 1 bearing: {minus45}. side 1 distance: {msg.ranges[minus45]}")
+        print(f"side 2 bearing: {plus45}. side 2 distance: {msg.ranges[plus45]}")
             
         if math.fabs(msg.ranges[minus45] - msg.ranges[plus45]) < error:
             print("WALL YEYAY")

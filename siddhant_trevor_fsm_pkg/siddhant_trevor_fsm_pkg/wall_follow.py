@@ -47,10 +47,11 @@ class WallFollowNode(Node):
         if self.turn_state == 1:
             out.linear.x = 0.1
             out.angular.z = -(10*math.pi/180)
-            # print(f"Turning left at negative {out.angular.z} rad/s")
+            #print(f"Turning left at negative {out.angular.z} rad/s")
         elif self.turn_state == 2:
             out.linear.x = 0.1
             out.angular.z = 10*math.pi/180
+            #print(f"Turning right at negative {out.angular.z} rad/s")
             
         elif self.turn_state == 0:
             out.linear.x = 0.1
@@ -64,8 +65,8 @@ class WallFollowNode(Node):
             return
         
         print(f"turn state is {self.turn_state}")
-        idx_a = 90-45
-        idx_b = 90+45
+        idx_a = 90-30
+        idx_b = 90+30
 
         a = msg.ranges[idx_a]
         b = msg.ranges[idx_b]
@@ -78,7 +79,8 @@ class WallFollowNode(Node):
             self.hand_off('DRAW_SHAPE')
         
         print(f"err: {a - b}")
-        #print(f"distance for b: {b}")
+        print(f"distance for b: {b}")
+        print(f"a: {a}")
 
 
         # print(f"Distance from wall: {pos}")
