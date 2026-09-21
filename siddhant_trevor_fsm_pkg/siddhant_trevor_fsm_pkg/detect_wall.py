@@ -4,6 +4,7 @@ from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 import math
 from std_msgs.msg import String
+from time import sleep
 
 class DetectWall(Node):
 
@@ -12,19 +13,41 @@ class DetectWall(Node):
     def __init__(self):
         super().__init__('detect_wall_node')
         self.create_timer(0.1, self.run_loop)
-        self.sub = self.create_subscription(LaserScan, 'scan', self.detect_the_wall, 10)
+        self.sub = self.create_subscription(LaserScan, 'scan', self.process_scan, 10)
         self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
         self.behavior_pub = self.create_publisher(String, 'behavior', 10)
         self.create_subscription(String, 'behavior', self.process_behavior, 10)
         self.state = 'detecting'
         self.is_wall = False
-        self.active = True
+        self.active = False
+        self.first_adjust = True
         self.ticks = 0
         self.is_adjusted = False
 
 
         print("I'm initializing")
+
+    def process_behavior(self, msg):
+            if msg.data == 'DETECT_WALL':
+                if not self.active:
+                    self.state = 'detecting'
+                    self.is_wall = False
+                    self.first_adjust = True
+                    self.ticks = 0
+                    self.is_adjusted = False
+                self.active = True
+            else: 
+                self.active = False
+
+    def hand_off(self, next_name):
+        self.pub.publish(Twist())          # stop the robot
+        self.active = False
+        state_msg = String()
+        state_msg.data = next_name
+        self.behavior_pub.publish(state_msg)
+        print(f"handing off to {next_name}")
+
 
     def run_loop(self):
         if self.active == False:
@@ -33,10 +56,16 @@ class DetectWall(Node):
         if self.state == 'detecting':
             pass
         elif self.state == 'adjust':
+            print("Now adjusting")
+            if self.first_adjust == True:
+                msg.linear.x = -0.1
+                sleep(2)
+                self.first_adjust = False
+            msg.angular.z = 30 * math.pi /180
             if self.is_adjusted:
                 self.hand_off('WALL_FOLLOW')
+                self.first_adjust = True
                 return
-            msg.angular.z = 0.0
         elif self.state == 'backup':
             msg.linear.x = -0.1
             self.ticks = self.ticks + 1
@@ -46,19 +75,22 @@ class DetectWall(Node):
         elif self.state == 'turn_around':
             msg.angular.z = 30 * math.pi /180
             self.ticks = self.ticks + 1
-        if self.ticks >= 60:
-            self.hand_off('DRAW_SHAPE')
-            return
+            if self.ticks >= 60:
+                self.hand_off('DRAW_SHAPE')
+                self.first_adjust = True
+                return
 
         self.pub.publish(msg)
         
     def process_scan(self, msg):
+        # print("We scanning")
         if self.active == False:
             return
-        if self.state == 'classify':
+        if self.state == 'detecting':
             self.detect_the_wall(msg)
             if self.is_wall:
                 self.state = 'adjust'
+                print("We got a wall")
             else:
                 self.state = 'backup'
         elif self.state == 'adjust':
@@ -71,9 +103,9 @@ class DetectWall(Node):
         error = .1
         min_dist = msg.ranges[0]
         min_dist_idx = 0
-        print("I'm running")
+        print(self.active)
         for idx, distance in enumerate(msg.ranges):
-            if distance < min_dist:
+            if 0 < distance < min_dist:
                 min_dist = distance
                 min_dist_idx = idx
 
@@ -102,7 +134,9 @@ class DetectWall(Node):
                 min_dist_idx = idx
 
         if math.fabs(min_dist_idx - 90) < 15:
-            self.is_adjusted = True          
+            self.is_adjusted = True 
+              
+        print(f"min distance: {min_dist}")        
 
 def main(args=None):
     rclpy.init(args=args)
