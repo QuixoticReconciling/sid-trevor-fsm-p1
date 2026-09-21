@@ -24,7 +24,7 @@ class DrawShape(Node):
         # create a thread to handle long-running component
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
 
-        self.hit_pub = self.create_publsiher(String, 'found_object', 10)
+        #self.hit_pub = self.create_publisher(String, 'found_object', 10)
 
         self.num_turns = 5
         self.distance = 2
@@ -61,6 +61,7 @@ class DrawShape(Node):
         if self.bump_state:
             print("Bump detected! Stopping the neato.")
             self.bump.set()
+            #self.hit_pub.publish('found')
             self.stop()
 
 
