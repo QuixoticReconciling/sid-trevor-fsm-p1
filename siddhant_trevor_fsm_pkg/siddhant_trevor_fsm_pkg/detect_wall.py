@@ -9,10 +9,10 @@ class DetectWall(Node):
         super().__init__('detect_wall_node')
         self.sub = self.create_subscription(LaserScan, 'scan', self.detect_the_wall, 10)
         self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
-        self.active = True
+
+
         print("I'm initializing")
 
-    #this method has a problem
     def detect_the_wall(self, msg):
         error = .1
         min_dist = msg.ranges[0]
@@ -36,6 +36,29 @@ class DetectWall(Node):
             print("WALL YEYAY")
         else:
             print("NO WALL SAD")
+
+        self.spin()
+        self.adjust_neato()
+
+    def adjust_neato(self, msg):
+        min_dist = msg.ranges[0]
+        min_dist_idx = 0
+        for idx, distance in enumerate(msg.ranges):
+            if distance < min_dist:
+                min_dist = distance
+                min_dist_idx = idx
+
+        if math.fabs(min_dist_idx - 90) < 3:
+            self.is_adjusted = True
+
+    def spin(self):
+        msg = Twist()
+        if self.is_adjusted: 
+            msg.angular.z = 0
+            self.active = False
+        else: 
+            msg.angular.z = 10 * math.pi / 180.5
+
             
 
 
