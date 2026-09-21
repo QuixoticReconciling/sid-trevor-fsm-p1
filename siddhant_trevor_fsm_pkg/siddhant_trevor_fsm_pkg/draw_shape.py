@@ -23,15 +23,14 @@ class DrawShape(Node):
         super().__init__('draw_shape_node')
         # create a thread to handle long-running component
         self.vel_pub = self.create_publisher(Twist, 'cmd_vel', 10)
-
-        self.hit_pub = self.create_publsiher(String, 'found_object', 10)
+        self.hit_pub = self.create_publisher(String, 'found_object', 10)
+        self.create_subscription(Bump, 'bump', self.process_bump, 10)
 
         self.num_turns = 5
         self.distance = 2
         self.linear_speed = 0.3
         self.time_to_drive = self.distance / self.linear_speed
 
-        self.create_subscription(Bump, 'bump', self.process_bump, 10)
         self.bump_state = False
         self.bump = Event()
 
