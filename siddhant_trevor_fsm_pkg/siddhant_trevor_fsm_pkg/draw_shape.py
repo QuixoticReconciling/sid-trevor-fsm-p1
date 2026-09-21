@@ -31,6 +31,8 @@ class DrawShape(Node):
 
         self.run_loop_thread = Thread(target=self.run_loop)
         self.run_loop_thread.start()
+        self.active = True
+        self.next_node = False
 
     def run_loop(self):
         self.drive_forward(0.0)

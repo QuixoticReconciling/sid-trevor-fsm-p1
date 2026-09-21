@@ -9,6 +9,7 @@ class DetectWall(Node):
         super().__init__('detect_wall_node')
         self.sub = self.create_subscription(LaserScan, 'scan', self.detect_the_wall, 10)
         self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.active = True
         print("I'm initializing")
 
     #this method has a problem
@@ -23,7 +24,7 @@ class DetectWall(Node):
                 min_dist_idx = idx
 
         plus45 = min_dist_idx + 45
-        if plus45 > 360:
+        if plus45 >= 360:
             plus45 = plus45 - 360
 
         minus45 = min_dist_idx - 45

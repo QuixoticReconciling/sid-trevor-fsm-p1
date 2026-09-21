@@ -15,6 +15,8 @@ class WallFollowNode(Node):
         self.turn_state = 0
         print("Initializing")
         self.is_left = True
+        self.active = True
+        self.next_node = False
         #self.follow_distance = get_follow_dist()
 
 

@@ -12,6 +12,8 @@ class Adjust:
         self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
         self.is_adjusted = False
         self.active = True
+        self.next_node = False
+
 
 
     def adjust_neato(self, msg):
@@ -22,7 +24,7 @@ class Adjust:
                 min_dist = distance
                 min_dist_idx = idx
 
-        if min_dist_idx == 90:
+        if abs(min_dist_idx - 90) < 3:
             self.is_adjusted = True
 
     def spin(self):

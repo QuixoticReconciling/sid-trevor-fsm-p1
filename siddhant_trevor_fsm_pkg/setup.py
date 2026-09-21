@@ -30,6 +30,7 @@ setup(
             'adjust = siddhant_trevor_fsm_pkg.adjust:main',
             'wall_follow = siddhant_trevor_fsm_pkg.wall_follow:main',
             'detect_wall = siddhant_trevor_fsm_pkg.detect_wall:main',
+            'bump_wall_adjust = siddhant_trevor_fsm_pkg.bump_wall_adjust:main',
         ],
     },
 )

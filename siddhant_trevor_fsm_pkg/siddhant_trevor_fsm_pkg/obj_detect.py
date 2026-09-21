@@ -10,6 +10,8 @@ class ObjDetectNode(Node):
         self.bump_state = False
         self.sub = self.create_subscription(Bump, 'bump', self.process_bump, 10)
         self.pub = self.create_publisher(Twist, 'cmd_vel', 10)
+        self.active = True
+        self.next_node = False
 
     def run_loop(self):
         msg = Twist()
