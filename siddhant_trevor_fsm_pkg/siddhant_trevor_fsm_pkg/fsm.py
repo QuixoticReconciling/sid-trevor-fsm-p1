@@ -7,12 +7,14 @@ from sensor_msgs.msg import LaserScan
 from std_msgs.msg import Bool
 import math
 import detect_wall, draw_shape, obj_detect, wall_follow
+from std_msgs.msg import String
+
 
 class FSM(Node):
     def __init__(self):
         super().__init__("fsm_node")
         self.create_timer(0.001, self.run_loop)
-        self.state_sub = self.create_subscription(String, 'robot_state', self.process_state, 10)
+        self.create_subscription(String, 'robot_state', self.process_state, 10)
 
 
     def run_loop(self, msg):
