@@ -67,7 +67,7 @@ class WallFollowNode(Node):
     
     def detect_error(self, msg) :
         """
-        
+        calculates the error and allows neato to drive straight
         """
         if self.active == False:
             return

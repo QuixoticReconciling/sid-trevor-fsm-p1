@@ -38,6 +38,9 @@ class DetectWall(Node):
         self.get_logger().info("I'm initializing")
 
     def process_behavior(self, msg):
+            """
+            takes input from the behavior topic and adjusts output of node as needed
+            """
             if msg.data == 'DETECT_WALL':
                 if not self.active:
                     self.state = 'detecting'
@@ -50,6 +53,9 @@ class DetectWall(Node):
                 self.active = False
 
     def hand_off(self, next_name):
+        """
+        Transfers functionality to the next node
+        """
         self.pub.publish(Twist())
         self.active = False
         state_msg = String()
@@ -59,6 +65,9 @@ class DetectWall(Node):
 
 
     def run_loop(self):
+        """
+        adjusts the neato to the correct orientation after a bump as occured
+        """
         if self.active == False:
             return
         msg = Twist()
@@ -88,10 +97,12 @@ class DetectWall(Node):
                 self.hand_off('DRAW_SHAPE')
                 self.first_adjust = True
                 return
-
         self.pub.publish(msg)
         
     def process_scan(self, msg):
+        """
+        tracks the current state of the robot
+        """
         self.get_logger().info("We are scanning")
         if self.active == False:
             return
@@ -107,10 +118,14 @@ class DetectWall(Node):
 
 
     def detect_the_wall(self, msg):
+        """
+        Does the math calculations (with an error) to determine if the bumped into 
+        object is a wall. Projects a 30 degree cone from the smallest distance from the neato
+        """
         if self.active == False:
             return
         error = .2
-        min_dist = 100
+        min_dist = 100 # avoid inf
         min_dist_idx = 0
         self.get_logger().info(f"active: {str(self.active)}")
         for idx, distance in enumerate(msg.ranges):
@@ -138,6 +153,9 @@ class DetectWall(Node):
             self.is_wall = False
 
     def adjust_neato(self, msg):
+        """
+        Adjusts the neato in segments until it is parallel with the wall
+        """
         min_dist = 100
         min_dist_idx = 0
         for idx, distance in enumerate(msg.ranges):
