@@ -18,13 +18,12 @@ class WallFollowNode(Node):
 
         self.create_timer(0.1, self.run_loop)
         self.turn_state = 0
-        print("Initializing")
+        self.get_logger().info("Initializing")
         self.is_left = True
         self.active = False
 
     def process_behavior(self, msg):
             if msg.data == 'WALL_FOLLOW':
-                # Re-initialize
                 if not self.active:
                     self.turn_state = 0
                 self.active = True
@@ -37,7 +36,7 @@ class WallFollowNode(Node):
         state_msg = String()
         state_msg.data = next_name
         self.behavior_pub.publish(state_msg)
-        print(f"handing off to {next_name}")
+        self.get_logger().info(f"handing off to {next_name}")
 
 
     def run_loop(self):
@@ -47,15 +46,12 @@ class WallFollowNode(Node):
         if self.turn_state == 1:
             out.linear.x = 0.1
             out.angular.z = -(10*math.pi/180)
-            #print(f"Turning left at negative {out.angular.z} rad/s")
         elif self.turn_state == 2:
             out.linear.x = 0.1
             out.angular.z = 10*math.pi/180
-            #print(f"Turning right at negative {out.angular.z} rad/s")
             
         elif self.turn_state == 0:
             out.linear.x = 0.1
-            # print(f"Moving forward at {out.linear.x} m/s")
 
         self.pub.publish(out)
 
@@ -64,27 +60,23 @@ class WallFollowNode(Node):
         if self.active == False:
             return
         
-        print(f"turn state is {self.turn_state}")
+        self.get_logger().info(f"turn state is {self.turn_state}")
         idx_a = 90-30
         idx_b = 90+30
 
         a = msg.ranges[idx_a]
         b = msg.ranges[idx_b]
-        #max_dist = .4
 
-        # Skip the scan if either scan is bad
-        if a == 0 or b == 0:
+        if not math.isfinite(a) or not math.isfinite(b):
             return
         if a > 1 or b > 1:
             self.hand_off('DRAW_SHAPE')
         
-        print(f"err: {a - b}")
-        print(f"distance for b: {b}")
-        print(f"a: {a}")
+        self.get_logger().info(f"err: {a - b}")
+        self.get_logger().info(f"distance for b: {b}")
+        self.get_logger().info(f"a: {a}")
 
 
-        # print(f"Distance from wall: {pos}")
-        # print(f"Min dist: {pos}")
         if self.is_left:
             if a < b :
                 self.turn_state = 1

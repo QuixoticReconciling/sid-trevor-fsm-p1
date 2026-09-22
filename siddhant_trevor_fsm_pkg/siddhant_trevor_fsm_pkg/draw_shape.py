@@ -41,10 +41,10 @@ class DrawShape(Node):
         self.run_loop_thread = Thread(target=self.run_loop)
         self.run_loop_thread.start()
 
-        print("Initializing")
+        self.get_logger().info("Initializing")
 
     def run_loop(self):
-        print("Running star loop")
+        self.get_logger().info("Running star loop")
         sleep(2)
         while True:
             if self.active and self.start_new_star:
@@ -61,7 +61,7 @@ class DrawShape(Node):
         self.bump = Event()
         for _ in range(self.num_turns):
             if not self.bump.is_set():
-                print("running")
+                self.get_logger().info("running")
                 self.drive_forward()
             if not self.bump.is_set():
                 self.turn_left(-144)
@@ -75,7 +75,7 @@ class DrawShape(Node):
         if self.active == False:
             return
         if self.bump_state:
-            print("Bump detected! Stopping the neato.")
+            self.get_logger().info("Bump detected! Stopping the neato.")
             self.bump.set()
             self.hand_off('DETECT_WALL')
 
@@ -95,7 +95,7 @@ class DrawShape(Node):
         state_msg = String()
         state_msg.data = next_name
         self.behavior_pub.publish(state_msg)
-        print(f"handing off to {next_name}")
+        self.get_logger().info(f"handing off to {next_name}")
 
 
     def drive_forward(self):

@@ -26,7 +26,7 @@ class DetectWall(Node):
         self.is_adjusted = False
 
 
-        print("I'm initializing")
+        self.get_logger().info("I'm initializing")
 
     def process_behavior(self, msg):
             if msg.data == 'DETECT_WALL':
@@ -46,7 +46,7 @@ class DetectWall(Node):
         state_msg = String()
         state_msg.data = next_name
         self.behavior_pub.publish(state_msg)
-        print(f"handing off to {next_name}")
+        self.get_logger().info(f"handing off to {next_name}")
 
 
     def run_loop(self):
@@ -56,7 +56,7 @@ class DetectWall(Node):
         if self.state == 'detecting':
             pass
         elif self.state == 'adjust':
-            print("Now adjusting")
+            self.get_logger().info("Now adjusting")
             if self.first_adjust == True:
                 msg.linear.x = -0.1
                 sleep(2)
@@ -83,14 +83,14 @@ class DetectWall(Node):
         self.pub.publish(msg)
         
     def process_scan(self, msg):
-        # print("We scanning")
+        self.get_logger().info("We are scanning")
         if self.active == False:
             return
         if self.state == 'detecting':
             self.detect_the_wall(msg)
             if self.is_wall:
                 self.state = 'adjust'
-                print("We got a wall")
+                self.get_logger().info("We got a wall")
             else:
                 self.state = 'backup'
         elif self.state == 'adjust':
@@ -101,9 +101,9 @@ class DetectWall(Node):
         if self.active == False:
             return
         error = .2
-        min_dist = msg.ranges[0]
+        min_dist = 100
         min_dist_idx = 0
-        print(self.active)
+        self.get_logger().info(f"active: {str(self.active)}")
         for idx, distance in enumerate(msg.ranges):
             if 0 < distance < min_dist:
                 min_dist = distance
@@ -118,18 +118,18 @@ class DetectWall(Node):
         if minus45 < 0:
             minus45 = minus45 + 360
 
-        print(f"side 1 bearing: {minus45}. side 1 distance: {msg.ranges[minus45]}")
-        print(f"side 2 bearing: {plus45}. side 2 distance: {msg.ranges[plus45]}")
+        self.get_logger().info(f"side 1 bearing: {minus45}. side 1 distance: {msg.ranges[minus45]}")
+        self.get_logger().info(f"side 2 bearing: {plus45}. side 2 distance: {msg.ranges[plus45]}")
             
         if math.fabs(msg.ranges[minus45] - msg.ranges[plus45]) < error:
-            print("WALL YEYAY")
+            self.get_logger().info("WALL YEYAY")
             self.is_wall = True
         else:
-            print("NO WALL SAD")
+            self.get_logger().info("NO WALL SAD")
             self.is_wall = False
 
     def adjust_neato(self, msg):
-        min_dist = msg.ranges[0]
+        min_dist = 100
         min_dist_idx = 0
         for idx, distance in enumerate(msg.ranges):
             if distance < min_dist:
@@ -139,7 +139,7 @@ class DetectWall(Node):
         if math.fabs(min_dist_idx - 90) < 15:
             self.is_adjusted = True 
               
-        print(f"min distance: {min_dist}")        
+        self.get_logger().info(f"min distance: {min_dist}")        
 
 def main(args=None):
     rclpy.init(args=args)
