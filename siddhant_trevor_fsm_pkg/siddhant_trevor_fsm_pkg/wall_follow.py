@@ -23,14 +23,20 @@ class WallFollowNode(Node):
         self.active = False
 
     def process_behavior(self, msg):
-            if msg.data == 'WALL_FOLLOW':
-                if not self.active:
-                    self.turn_state = 0
-                self.active = True
-            else: 
-                self.active = False
+        """
+        regulates turning on the node based on behavior topic
+        """
+        if msg.data == 'WALL_FOLLOW':
+            if not self.active:
+                self.turn_state = 0
+            self.active = True
+        else: 
+            self.active = False
 
     def hand_off(self, next_name):
+        """
+        manages handing off to the next behavior based on detect wall's decision
+        """
         self.pub.publish(Twist())          # stop the robot
         self.active = False
         state_msg = String()
@@ -40,6 +46,9 @@ class WallFollowNode(Node):
 
 
     def run_loop(self):
+        """
+        handles adjusting the position of the neato after the next state is determined
+        """
         if self.active == False:
             return
         out = Twist()
@@ -57,6 +66,9 @@ class WallFollowNode(Node):
 
     
     def detect_error(self, msg) :
+        """
+        
+        """
         if self.active == False:
             return
         

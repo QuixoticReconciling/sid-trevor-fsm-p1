@@ -1,3 +1,12 @@
+""""
+Detect Wall
+--------
+When a bumps is triggered, determines if the object neato bumped into is a wall or 
+not a wall through checking if two perpendicular indices of lidar sensor (each 45
+degrees from the closest point) are equal, meaning they form a straight line with
+the minumum distance point
+"""
+
 import rclpy
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -7,9 +16,9 @@ from std_msgs.msg import String
 from time import sleep
 
 class DetectWall(Node):
-
-    
-
+    """
+    A node used to determine whether an object the neato bumped into is a wall or not
+    """
     def __init__(self):
         super().__init__('detect_wall_node')
         self.create_timer(0.1, self.run_loop)
@@ -41,7 +50,7 @@ class DetectWall(Node):
                 self.active = False
 
     def hand_off(self, next_name):
-        self.pub.publish(Twist())          # stop the robot
+        self.pub.publish(Twist())
         self.active = False
         state_msg = String()
         state_msg.data = next_name
