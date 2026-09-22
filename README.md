@@ -1,4 +1,4 @@
-# Coputational Robotics Finite State Machine Project
+# Computational Robotics Finite State Machine Project
 
 ENGR3590: A Computational Introduction to Robotics, Olin College of Engineering, FA2026
 
@@ -41,4 +41,6 @@ Wall follow is able to continuously follow a wall thanks to the `turn_state` var
 ### Challenges
 Boy oh boy were there challenges. One of the biggest challenges we faced was towards the end when we had all of our individual behaviors and we were trying to combine them into a finite state machine. We opted to not go for a single node approach, and instead built a separate topic that all nodes could subscribe and publish to. More information about this is listed in Draw shape. This was not easy, and this led to some very haphazard if else logic that took forever to debug. This leads to another major challenge we faced: debugging. I think one reason this was difficult is that we didn't take advantage of all of the debugging tools that ros has to offer. We never used rviz2, and looked at the node graph maybe once to help us out.
 ### Improvements
+A huge improvement we would implement if we did this again is to try to do the whole FSM inside of one node instead of publishing to our behavior topic. This would make desync between the nodes much easier to deal with and the communication between them much less cumbersome. This is especially relavent since other than detecting if a bump has occured, none of the behaviors have to happen at the same time as each other.
+
 ### Takeaways
