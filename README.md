@@ -11,7 +11,7 @@ This is an introductory project that explores how to create how to use nodes, su
 - Wall Follow
 
 ## Draw Shape
-The draw shape behavior tells the neato to draw a shape based on a set number of turns, and given angle.
+The draw shape behavior tells the neato to draw a shape based on a set number of turns, and given angle. This method also contains the collision avoidance behavior (stops when bump sensor is triggered)
 ### Methods
 This iteration of draw_shape.py draws a star. The number of turns is set to 5 and the angle is set at 144 degrees. To prevent the neato from continuing to run after bumping into something we subscribe to the "/cmd_vel" topic and use multi-threading. Since we are using sleep to make the neato drive forward and turn, we need to use multi-threading to interrupt the command. We use an Event to execute this interrupt. Although in code and in simulation our code draws a star, when we use the actual neatos they do not. The real neatos exhibit factors like friction that make the number of degrees to turn impossible to be accurate using time. To ensure accurate turnings we would have to be odometry, but since the purpose of draw shape is to find a wall to bump into, we determined that drawing an accurate star was not necessary.
 
